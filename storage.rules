@@ -1,0 +1,13 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isCompanyUser() {
+      return request.auth != null &&
+             request.auth.token.email.matches('.*@frame15\\.com');
+    }
+    match /{allPaths=**} {
+      // All Storage reads/writes require signed-in @frame15.com users
+      allow read, write: if isCompanyUser();
+    }
+  }
+}

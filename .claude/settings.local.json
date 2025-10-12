@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build)",
+      "Bash(firebase emulators:*)",
+      "Bash(taskkill:*)",
+      "Bash(dir:*)",
+      "Bash(firebase deploy:*)",
+      "Bash(npm install)",
+      "Bash(git init:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

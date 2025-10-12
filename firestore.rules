@@ -1,0 +1,12 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() {
+      return request.auth != null
+        && request.auth.token.email.matches('.*@frame15\\.com');
+    }
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}
