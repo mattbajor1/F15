@@ -27,7 +27,9 @@ firestore-debug.*.log
 
 # Environment variables and secrets
 .env
+.env.*
 .env.local
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
@@ -38,9 +40,9 @@ serviceAccount*.json
 service-account*.json
 credentials*.json
 
-# Allow .env.production (contains only public Firebase config)
-!.env.production
-!frontend/.env.production
+# Allow .env.example files
+!.env.example
+!frontend/.env.example
 
 # Firebase service account keys
 functions/serviceAccountKey.json
