@@ -15,7 +15,6 @@ functions/lib/
 
 # Firebase
 .firebase/
-.firebaserc
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
@@ -23,9 +22,11 @@ database-debug.log
 firebase-debug.*.log
 firestore-debug.*.log
 
+# Allow .firebaserc (contains project config)
+!.firebaserc
+
 # Environment variables and secrets
 .env
-.env.*
 .env.local
 .env.development.local
 .env.test.local
@@ -36,6 +37,10 @@ firestore-debug.*.log
 serviceAccount*.json
 service-account*.json
 credentials*.json
+
+# Allow .env.production (contains only public Firebase config)
+!.env.production
+!frontend/.env.production
 
 # Firebase service account keys
 functions/serviceAccountKey.json
