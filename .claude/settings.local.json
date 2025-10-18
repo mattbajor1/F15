@@ -25,7 +25,10 @@
       "Bash(firebase functions:log:*)",
       "Bash(gcloud logging read:*)",
       "Bash(gcloud projects add-iam-policy-binding:*)",
-      "Bash(del nul)"
+      "Bash(del nul)",
+      "Bash(git push)",
+      "Bash(git rm:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

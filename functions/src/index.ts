@@ -486,37 +486,103 @@ router.delete('/inventory/:id', async (req, res) => {
 // ============ AI MARKETING ============
 router.post('/marketing/generate', async (req, res) => {
   try {
-    const { contentType, projectName, projectDescription, customPrompt } = req.body
+    const {
+      contentType,
+      projectName,
+      projectDescription,
+      customPrompt,
+      tone = 'professional',
+      targetAudience = '',
+      length = 'medium'
+    } = req.body
 
-    // Build the prompt for Gemini
-    let prompt = ''
+    // Build enhanced prompt for Gemini with film industry context
+    const companyContext = 'Frame 15 is a film production company specializing in high-quality video production.'
 
+    let basePrompt = ''
+    let lengthGuide = ''
+
+    // Set length guidelines
+    switch (length) {
+      case 'short':
+        lengthGuide = 'Keep it concise and punchy (1-2 paragraphs or 50-100 words).'
+        break
+      case 'long':
+        lengthGuide = 'Write a comprehensive and detailed piece (5+ paragraphs or 500+ words).'
+        break
+      default: // medium
+        lengthGuide = 'Write a well-developed piece (3-4 paragraphs or 200-400 words).'
+    }
+
+    // Build content-specific prompts with industry context
     switch (contentType) {
       case 'social-post':
-        prompt = `Create an engaging social media post${projectName ? ` for a project called "${projectName}"` : ''}${projectDescription ? ` which is about: ${projectDescription}` : ''}.`
+        basePrompt = `Create an engaging social media post for a film/video production${projectName ? ` titled "${projectName}"` : ''}. ${companyContext}`
+        if (projectDescription) basePrompt += ` Project details: ${projectDescription}`
+        basePrompt += ` Make it attention-grabbing and shareable. Include relevant hashtags. ${lengthGuide}`
         break
+
       case 'email':
-        prompt = `Write a professional email campaign${projectName ? ` for a project called "${projectName}"` : ''}${projectDescription ? ` which is about: ${projectDescription}` : ''}.`
+        basePrompt = `Write a professional email campaign for a film/video production${projectName ? ` titled "${projectName}"` : ''}. ${companyContext}`
+        if (projectDescription) basePrompt += ` Project details: ${projectDescription}`
+        basePrompt += ` Include a compelling subject line and clear call-to-action. ${lengthGuide}`
         break
+
       case 'blog':
-        prompt = `Write a compelling blog post${projectName ? ` for a project called "${projectName}"` : ''}${projectDescription ? ` which is about: ${projectDescription}` : ''}.`
+        basePrompt = `Write an engaging blog post about a film/video production${projectName ? ` titled "${projectName}"` : ''}. ${companyContext}`
+        if (projectDescription) basePrompt += ` Project details: ${projectDescription}`
+        basePrompt += ` Make it informative and SEO-friendly. Include an engaging title and subheadings. ${lengthGuide}`
         break
+
       case 'ad-copy':
-        prompt = `Create persuasive advertising copy${projectName ? ` for a project called "${projectName}"` : ''}${projectDescription ? ` which is about: ${projectDescription}` : ''}.`
+        basePrompt = `Create persuasive advertising copy for a film/video production${projectName ? ` titled "${projectName}"` : ''}. ${companyContext}`
+        if (projectDescription) basePrompt += ` Project details: ${projectDescription}`
+        basePrompt += ` Focus on benefits and include a strong call-to-action. ${lengthGuide}`
         break
+
       case 'press-release':
-        prompt = `Write a professional press release${projectName ? ` for a project called "${projectName}"` : ''}${projectDescription ? ` which is about: ${projectDescription}` : ''}.`
+        basePrompt = `Write a professional press release for a film/video production${projectName ? ` titled "${projectName}"` : ''}. ${companyContext}`
+        if (projectDescription) basePrompt += ` Project details: ${projectDescription}`
+        basePrompt += ` Follow AP style. Include headline, dateline, and boilerplate. ${lengthGuide}`
         break
+
       case 'seo-description':
-        prompt = `Write an SEO-optimized meta description${projectName ? ` for a project called "${projectName}"` : ''}${projectDescription ? ` which is about: ${projectDescription}` : ''}.`
+        basePrompt = `Write an SEO-optimized meta description for a film/video production${projectName ? ` titled "${projectName}"` : ''}. ${companyContext}`
+        if (projectDescription) basePrompt += ` Project details: ${projectDescription}`
+        basePrompt += ` Keep it under 160 characters, include keywords, and make it compelling.`
         break
+
       default:
-        prompt = `Create marketing content${projectName ? ` for "${projectName}"` : ''}.`
+        basePrompt = `Create marketing content for${projectName ? ` "${projectName}"` : ' a film/video production'}. ${companyContext} ${lengthGuide}`
     }
 
-    if (customPrompt) {
-      prompt += ` Additional instructions: ${customPrompt}`
+    // Add tone specification
+    let toneInstruction = ''
+    switch (tone) {
+      case 'professional':
+        toneInstruction = 'Use a professional, polished tone suitable for business communications.'
+        break
+      case 'creative':
+        toneInstruction = 'Use a creative, artistic tone that showcases innovation and storytelling.'
+        break
+      case 'casual':
+        toneInstruction = 'Use a friendly, conversational tone that feels approachable and relatable.'
+        break
+      case 'urgent':
+        toneInstruction = 'Use an urgent, action-oriented tone that creates excitement and FOMO.'
+        break
+      case 'inspiring':
+        toneInstruction = 'Use an inspiring, emotional tone that moves the audience.'
+        break
     }
+
+    // Add target audience
+    if (targetAudience) {
+      basePrompt += ` Target audience: ${targetAudience}.`
+    }
+
+    // Combine all prompt elements
+    const prompt = `${basePrompt} ${toneInstruction}${customPrompt ? ` Additional instructions: ${customPrompt}` : ''}`
 
     // Call Gemini API
     const apiKey = process.env.GEMINI_API_KEY
@@ -544,11 +610,14 @@ router.post('/marketing/generate', async (req, res) => {
     const geminiData: any = await geminiResponse.json()
     const content = geminiData.candidates?.[0]?.content?.parts?.[0]?.text || 'Failed to generate content'
 
-    // Save to history
+    // Save to history with enhanced metadata
     await db.collection('marketing_history').add({
       type: contentType,
       content,
       projectName: projectName || null,
+      tone,
+      targetAudience: targetAudience || null,
+      length,
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     })
 

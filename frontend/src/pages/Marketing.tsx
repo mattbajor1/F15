@@ -13,6 +13,9 @@ export default function Marketing() {
   const [selectedProject, setSelectedProject] = useState<string>('')
   const [contentType, setContentType] = useState<string>('social-post')
   const [prompt, setPrompt] = useState<string>('')
+  const [tone, setTone] = useState<string>('professional')
+  const [targetAudience, setTargetAudience] = useState<string>('')
+  const [length, setLength] = useState<string>('medium')
   const [generatedContent, setGeneratedContent] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [history, setHistory] = useState<any[]>([])
@@ -51,7 +54,12 @@ export default function Marketing() {
 
     try {
       const project = projects.find(p => p.id === selectedProject)
-      const body: any = { contentType }
+      const body: any = {
+        contentType,
+        tone,
+        targetAudience,
+        length
+      }
 
       if (selectedProject && project) {
         body.projectId = selectedProject
@@ -152,6 +160,51 @@ export default function Marketing() {
                   <option value="press-release">Press Release</option>
                   <option value="seo-description">SEO Description</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tone
+                </label>
+                <select
+                  value={tone}
+                  onChange={(e) => setTone(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="professional">Professional</option>
+                  <option value="creative">Creative</option>
+                  <option value="casual">Casual</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="inspiring">Inspiring</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Length
+                </label>
+                <select
+                  value={length}
+                  onChange={(e) => setLength(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+                  <option value="short">Short (50-100 words)</option>
+                  <option value="medium">Medium (200-400 words)</option>
+                  <option value="long">Long (500+ words)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Target Audience (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={targetAudience}
+                  onChange={(e) => setTargetAudience(e.target.value)}
+                  placeholder="e.g., Corporate clients, Film enthusiasts..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                />
               </div>
 
               <div>
