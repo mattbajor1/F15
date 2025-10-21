@@ -28,7 +28,8 @@
       "Bash(del nul)",
       "Bash(git push)",
       "Bash(git rm:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(firebase functions:config:get:*)"
     ],
     "deny": [],
     "ask": []

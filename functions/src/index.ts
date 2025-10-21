@@ -2,9 +2,13 @@ import admin from 'firebase-admin'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { onRequest } from 'firebase-functions/v2/https'
+import { defineString } from 'firebase-functions/params'
 
 admin.initializeApp()
 const db = admin.firestore()
+
+// Define Gemini API key parameter
+const geminiApiKey = defineString('GEMINI_API_KEY')
 
 const app = express()
 app.disable('x-powered-by')
@@ -585,7 +589,7 @@ router.post('/marketing/generate', async (req, res) => {
     const prompt = `${basePrompt} ${toneInstruction}${customPrompt ? ` Additional instructions: ${customPrompt}` : ''}`
 
     // Call Gemini API
-    const apiKey = process.env.GEMINI_API_KEY
+    const apiKey = geminiApiKey.value()
     if (!apiKey) {
       return res.status(500).json({ error: 'Gemini API key not configured' })
     }
