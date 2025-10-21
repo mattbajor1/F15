@@ -34,148 +34,233 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto p-6">
-        <h1 className="text-2xl font-semibold mb-6">Dashboard</h1>
-        <div className="grid sm:grid-cols-3 gap-4 mb-6">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-32 rounded-xl bg-slate-800/40 animate-pulse border border-slate-800" />
-          ))}
-        </div>
-        <div className="h-64 rounded-xl bg-slate-800/40 animate-pulse border border-slate-800" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="spinner h-16 w-16" />
       </div>
     )
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        <p className="text-slate-400 mt-1">Welcome back! Here's what's happening with your projects.</p>
-      </div>
-
-      {/* Key Metrics */}
-      <div className="grid sm:grid-cols-3 gap-4 mb-6">
-        <MetricCard
-          label="Active Projects"
-          value={metrics?.activeProjects ?? 0}
-          icon="🎬"
-        />
-        <MetricCard
-          label="Open Tasks"
-          value={metrics?.openTasks ?? 0}
-          icon="✓"
-        />
-        <MetricCard
-          label="Available Equipment"
-          value={`${metrics?.availableEquipment ?? 0}%`}
-          icon="📦"
-        />
-      </div>
-
-      {/* Recent Projects */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40 shadow-card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Recent Projects</h2>
-          <Link
-            to="/projects"
-            className="text-sm text-brand hover:text-brand/80 transition-colors"
-          >
-            View all →
-          </Link>
+    <div className="min-h-screen p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Header */}
+        <div className="animate-fade-in">
+          <h1 className="page-title">Dashboard</h1>
+          <p className="text-slate-400 text-lg">
+            Welcome back! Here's what's happening with your Frame 15 productions.
+          </p>
         </div>
 
-        {metrics?.recentProjects && metrics.recentProjects.length > 0 ? (
-          <div className="space-y-3">
-            {metrics.recentProjects.map(project => (
-              <Link
-                key={project.id}
-                to={`/projects/${project.id}`}
-                className="block rounded-lg border border-slate-800 bg-slate-900/40 p-4 hover:border-slate-700 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="font-semibold">{project.name}</div>
-                    <div className="text-sm text-slate-400">{project.client}</div>
-                  </div>
-                  <StatusBadge status={project.status} />
-                </div>
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12 text-slate-400">
-            <div className="text-4xl mb-2">📋</div>
-            <div>No projects yet</div>
-            <Link to="/projects" className="text-brand hover:underline mt-2 inline-block">
-              Create your first project
-            </Link>
-          </div>
-        )}
-      </div>
+        {/* Key Metrics */}
+        <div className="grid sm:grid-cols-3 gap-6 animate-slide-in-up">
+          <MetricCard
+            label="Active Projects"
+            value={metrics?.activeProjects ?? 0}
+            icon="🎬"
+            color="indigo"
+          />
+          <MetricCard
+            label="Open Tasks"
+            value={metrics?.openTasks ?? 0}
+            icon="✅"
+            color="purple"
+          />
+          <MetricCard
+            label="Available Equipment"
+            value={`${metrics?.availableEquipment ?? 0}%`}
+            icon="📦"
+            color="pink"
+          />
+        </div>
 
-      {/* Quick Actions */}
-      <div className="grid sm:grid-cols-3 gap-4 mt-6">
-        <QuickAction
-          title="New Project"
-          description="Start a new production"
-          icon="➕"
-          to="/projects?new=true"
-        />
-        <QuickAction
-          title="Manage Inventory"
-          description="Track equipment & props"
-          icon="📦"
-          to="/inventory"
-        />
-        <QuickAction
-          title="View Reports"
-          description="Analytics & insights"
-          icon="📊"
-          to="/reports"
-        />
+        {/* Recent Projects */}
+        <div className="card animate-slide-in-up">
+          <div className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gradient-purple">Recent Projects</h2>
+              <Link
+                to="/projects"
+                className="text-indigo-400 hover:text-indigo-300 transition-colors font-medium flex items-center gap-2 group"
+              >
+                <span>View all</span>
+                <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
+            </div>
+
+            {metrics?.recentProjects && metrics.recentProjects.length > 0 ? (
+              <div className="space-y-3">
+                {metrics.recentProjects.map((project) => (
+                  <Link
+                    key={project.id}
+                    to={`/projects/${project.id}`}
+                    className="block rounded-lg border border-slate-700/50 bg-slate-800/30 p-4 hover:bg-slate-800/50 hover:border-indigo-500/30 transition-all duration-300 hover:shadow-lg group"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <div className="font-semibold text-lg group-hover:text-indigo-300 transition-colors">
+                          {project.name}
+                        </div>
+                        <div className="text-sm text-slate-400">{project.client}</div>
+                      </div>
+                      <StatusBadge status={project.status} />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 text-slate-400">
+                <div className="text-6xl mb-4 opacity-50">🎬</div>
+                <div className="text-lg mb-2">No projects yet</div>
+                <Link
+                  to="/projects"
+                  className="inline-flex items-center gap-2 mt-4 btn-primary"
+                >
+                  <span>Create your first project</span>
+                  <span>→</span>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid sm:grid-cols-3 gap-6 animate-slide-in-up">
+          <QuickAction
+            title="New Project"
+            description="Start a new production"
+            icon="➕"
+            to="/projects?new=true"
+            gradient="from-indigo-500/10 to-purple-500/10"
+            hoverGradient="from-indigo-500/20 to-purple-500/20"
+            borderColor="border-indigo-500/30"
+            textColor="text-indigo-300"
+          />
+          <QuickAction
+            title="Manage Inventory"
+            description="Track equipment & props"
+            icon="📦"
+            to="/inventory"
+            gradient="from-pink-500/10 to-rose-500/10"
+            hoverGradient="from-pink-500/20 to-rose-500/20"
+            borderColor="border-pink-500/30"
+            textColor="text-pink-300"
+          />
+          <QuickAction
+            title="AI Marketing"
+            description="Generate content with AI"
+            icon="✨"
+            to="/marketing"
+            gradient="from-purple-500/10 to-pink-500/10"
+            hoverGradient="from-purple-500/20 to-pink-500/20"
+            borderColor="border-purple-500/30"
+            textColor="text-purple-300"
+          />
+        </div>
+
+        {/* Pro Tip Banner */}
+        <div className="card bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 border-indigo-500/30 animate-fade-in">
+          <div className="p-6 flex items-center gap-4">
+            <div className="text-4xl animate-pulse-glow">💡</div>
+            <div>
+              <h3 className="font-semibold text-lg text-indigo-300 mb-1">Pro Tip</h3>
+              <p className="text-slate-300">
+                Use the AI Marketing tool to generate professional marketing content for your projects with
+                customizable tone and length options!
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
-function MetricCard({ label, value, icon }: { label: string; value: string | number; icon: string }) {
+function MetricCard({
+  label,
+  value,
+  icon,
+  color,
+}: {
+  label: string
+  value: string | number
+  icon: string
+  color: 'indigo' | 'purple' | 'pink'
+}) {
+  const colorClasses = {
+    indigo: 'from-indigo-500/20 to-indigo-600/20 border-indigo-500/30 text-indigo-300',
+    purple: 'from-purple-500/20 to-purple-600/20 border-purple-500/30 text-purple-300',
+    pink: 'from-pink-500/20 to-pink-600/20 border-pink-500/30 text-pink-300',
+  }
+
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/40 shadow-card p-6">
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-slate-400 text-sm">{label}</div>
-        <div className="text-2xl">{icon}</div>
+    <div className="stat-card">
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="text-slate-400 text-sm font-medium mb-2">{label}</div>
+          <div className="text-4xl font-bold text-gradient">{value}</div>
+        </div>
+        <div
+          className={`text-4xl bg-gradient-to-br ${colorClasses[color]} p-3 rounded-xl border transition-transform duration-300`}
+        >
+          {icon}
+        </div>
       </div>
-      <div className="text-3xl font-bold">{value}</div>
     </div>
   )
 }
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    Planning: 'bg-blue-500/20 text-blue-300',
-    'Pre-production': 'bg-yellow-500/20 text-yellow-300',
-    Production: 'bg-green-500/20 text-green-300',
-    'Post-production': 'bg-purple-500/20 text-purple-300',
-    Complete: 'bg-slate-500/20 text-slate-300',
+    Planning: 'badge badge-primary',
+    'Pre-production': 'badge badge-warning',
+    Production: 'badge badge-success',
+    'Post-production': 'badge badge-primary',
+    Complete: 'bg-slate-500/20 text-slate-300 border border-slate-500/30 px-3 py-1 rounded-full text-xs font-medium',
   }
-  const colorClass = colors[status] || 'bg-slate-500/20 text-slate-300'
+  const className = colors[status] || 'badge'
 
-  return (
-    <span className={`px-3 py-1 rounded-full text-xs font-medium ${colorClass}`}>
-      {status}
-    </span>
-  )
+  return <span className={className}>{status}</span>
 }
 
-function QuickAction({ title, description, icon, to }: { title: string; description: string; icon: string; to: string }) {
+function QuickAction({
+  title,
+  description,
+  icon,
+  to,
+  gradient,
+  hoverGradient,
+  borderColor,
+  textColor,
+}: {
+  title: string
+  description: string
+  icon: string
+  to: string
+  gradient: string
+  hoverGradient: string
+  borderColor: string
+  textColor: string
+}) {
   return (
     <Link
       to={to}
-      className="rounded-xl border border-slate-800 bg-slate-900/40 shadow-card p-4 hover:border-slate-700 transition-colors"
+      className={`
+        group relative overflow-hidden
+        bg-gradient-to-br ${gradient} hover:${hoverGradient}
+        border ${borderColor}
+        rounded-xl p-6
+        transition-all duration-300
+        hover:scale-105 hover:shadow-xl
+      `}
     >
-      <div className="text-2xl mb-2">{icon}</div>
-      <div className="font-semibold">{title}</div>
-      <div className="text-sm text-slate-400">{description}</div>
+      <div className={`absolute top-0 right-0 text-6xl opacity-10 group-hover:opacity-20 transition-opacity`}>
+        {icon}
+      </div>
+      <div className="relative">
+        <div className="text-3xl mb-3">{icon}</div>
+        <div className={`font-semibold text-lg ${textColor} mb-1`}>{title}</div>
+        <div className="text-slate-400 text-sm">{description}</div>
+      </div>
     </Link>
   )
 }
